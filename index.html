@@ -1,0 +1,139 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>معاينة بيانات فحص مركبة -</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Cairo", sans-serif; background: #ffffff; padding: 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+
+/* الفورم */
+.form-box { background:#fff; padding:25px; border-radius:15px; border:1px solid #ddd; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:20px }
+.form-box h1{text-align:center;color:#2E7D32;margin-bottom:20px;font-size:20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+input{width:100%;padding:11px;border:1px solid #ccc;border-radius:8px;font-family:"Cairo";font-size:14px}
+input:disabled{background:#eee;cursor:not-allowed}
+label{font-size:13px;margin-bottom:4px;display:block;color:#555;font-weight:600}
+.btn{background:#4CAF50;color:#fff;border:none;padding:12px;border-radius:8px;font-size:15px;cursor:pointer;width:100%;margin-top:8px;font-family:"Cairo";font-weight:700}
+.btn:hover{background:#43A047}
+.btn-secondary{background:#6c757d}
+.btn-danger{background:#dc3545}
+.btn-info{background:#17a2b8}
+.btn-warning{background:#ffc107;color:#000}
+.btn-sm{padding:6px 10px;font-size:13px;width:auto;margin:2px}
+.hidden{display:none}
+@media(max-width:600px){.row{grid-template-columns:1fr}}
+
+/* قائمة الصفحات */
+.pages-list{background:#fff;padding:20px;border-radius:15px;border:1px solid #ddd}
+.pages-list h2{color:#2E7D32;font-size:18px;margin-bottom:15px;text-align:center}
+.page-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:10px;background:#fafafa;flex-wrap:wrap;gap:10px}
+.page-info{flex:1;min-width:200px}
+.page-name{font-weight:700;color:#333;font-size:15px}
+.page-link{font-size:12px;color:#2E7D32;word-break:break-all}
+.page-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+
+/* صندوق QR */
+.qr-box{display:none;position:absolute;background:#fff;padding:10px;border:1px solid #ccc;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:999;text-align:center}
+.qr-box canvas{width:120px!important;height:120px!important}
+.qr-close{font-size:12px;color:#dc3545;cursor:pointer;margin-top:5px}
+
+/* صفحة عرض المعاينة التجريبية */
+.logo-top { text-align:center; margin: 18px auto 42px; }
+.logo-top h2 { font-size: clamp(24px, 5vw, 36px); color:#444; font-weight:700; }
+.logo-top p { font-size: clamp(17px, 3.5vw, 26px); color:#777; margin-top:8px; }
+.card {
+    background:#fff; border-radius:48px; padding:0; overflow:hidden;
+    border:6px solid #4CAF50; width:100%; max-width:640px; margin:0 auto;
+}
+.card-header {
+    background:#4CAF50; color:#fff; padding:32px 18px; text-align:center;
+    font-size:clamp(25px, 5vw, 38px); font-weight:700;
+    display:flex; align-items:center; justify-content:center; gap:18px;
+}
+.check-circle {
+    width:64px; height:64px; border:2px solid #fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:38px; background:#fff; color:#4CAF50; font-weight:900;
+}
+.card-body { background:#fff; padding:0; }
+.demo-note {
+    margin:0 auto 16px; max-width:640px; padding:12px;
+    border:1px dashed #d97706; border-radius:10px; text-align:center;
+    color:#92400e; background:#fffbeb; font-size:13px; font-weight:700;
+}
+.row-card {
+    display:flex; justify-content:space-between; align-items:center;
+    min-height:94px; padding:24px 30px; border-bottom:1px solid #e8e8e8; gap:18px;
+}
+.row-card:last-child { border-bottom:none; }
+.label {
+    color:#999; font-weight:500; font-size:clamp(17px, 3.5vw, 25px);
+    text-align:right; width:42%; flex-shrink:0; line-height:1.7;
+}
+.value {
+    color:#000; font-weight:700; font-size:clamp(18px, 3.8vw, 27px);
+    text-align:center; width:58%; flex-grow:1; overflow-wrap:anywhere;
+}
+.footer {
+    margin:32px auto 0; display:flex; justify-content:center; align-items:center;
+    gap:15px; max-width:640px; text-align:center; color:#a16207;
+    font-weight:700; font-size:14px; line-height:1.8;
+}
+.footer img { height:50px; }
+.status-badge { display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700 }
+.status-on { background:#d4edda; color:#155724; }
+.status-off { background:#f8d7da; color:#721c24; }
+@media(max-width:600px) {
+    body { padding:16px 12px; }
+    .logo-top { margin:12px auto 30px; }
+    .card { border-radius:34px; border-width:5px; }
+    .card-header { padding:24px 12px; }
+    .check-circle { width:48px; height:48px; font-size:29px; }
+    .row-card { min-height:78px; padding:18px 16px; gap:10px; }
+    .label { width:40%; }
+    .value { width:60%; }
+}
+/* صفحة الخطأ نفس كروم */
+.error-page{text-align:center;padding:60px 20px;background:#fff;border-radius:15px;max-width:430px;margin:0 auto}
+.error-icon{font-size:80px;margin-bottom:20px;color:#5f6368}
+.error-title{font-size:24px;color:#202124;margin-bottom:12px;font-weight:400}
+.error-desc{font-size:14px;color:#5f6368;line-height:1.8;margin-bottom:8px}
+.error-code{font-size:13px;color:#5f6368;margin-bottom:40px}
+.reload-btn{background:#1a73e8;color:#fff;border:none;padding:12px 24px;border-radius:24px;font-size:14px;cursor:pointer;font-family:"Cairo";font-weight:600;width:100%;max-width:300px}
+.reload-btn:hover{background:#1765cc}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="viewPage">
+    <div id="cardContent">
+      <div class="logo-top">
+        <h2>معاينة سلامة المركبات</h2>
+        <p>Vehicle Safety — Demo Preview</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span>سارية </span>
+          <div class="check-circle">✓</div>
+        </div>
+        <div class="card-body">
+          <div class="row-card"><span class="label">رقم اللوحة:</span><span class="value">  ب ل د 8448  </span></div>
+          <div class="row-card"><span class="label">رقم الهيكل:</span><span class="value">KMHDG41C4CU321576</span></div>
+          <div class="row-card"><span class="label">الشركة الصانعة:</span><span class="value">هونداي</span></div>
+          <div class="row-card"><span class="label">نوع السيارة:</span><span class="value">النترا 2012 </span></div>
+          <div class="row-card"><span class="label">تاريخ الفحص:</span><span class="value">06/11/2026</span></div>
+          <div class="row-card"><span class="label">مركز الفحص:</span><span class="value">الرياض -طريق الملك فهد</span></div>
+          <div class="row-card"><span class="label">نوع الخدمة:</span><span class="value">خدمة الفحص الدوري</span></div>
+          <div class="row-card"><span class="label">تاريخ انتهاء صلاحية الفحص:</span><span class="value">07/11/2027</span></div>
+        </div>
+      </div>
+      <div class="footer"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
